@@ -39,6 +39,17 @@ cp ${THINGNAME}*_file ../certs/
 2. navigate to IOT / Greengrass / Groups / <group name> / Devices
 3. Add device / existing thing
 
+## set endpoint address and root cert
+1. Using AWS CLI
+```
+aws iot describe-endpoint --endpoint-type iot:data-ats | jq '.endpointAddress' 
+```
+2. download the appropriate root CA 
+```
+curl https://www.amazontrust.com/repository/AmazonRootCA1.pem >AmazonRootCA1.pem
+```
+
+
 
 ## modify the source
 the AWS IOT Device Python SDK is incorporated as a git submodule. To get python to find this module, we need to make a symlink to the actual code folder.  Do this with
@@ -50,6 +61,12 @@ ln -s aws-iot-device-sdk-python/AWSIoTPythonSDK ./AWSIoTPythonSDK
 also using the braviarc library as a submodule, which relies on requests, so install that with pip
 ```
 pip3 install requests
+```
+
+Install the git submodules to PIP
+```
+pip3 install ./aws-iot-device-sdk-python
+pip3 install git+https://github.com/aparraga/braviarc.git
 ```
 
 

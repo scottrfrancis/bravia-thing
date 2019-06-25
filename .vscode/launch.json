@@ -1,0 +1,27 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: pollBraviaToShadow.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                //"--endpoint", "a38islc3h7i87s-ats.iot.us-west-2.amazonaws.com",
+                //"--rootCA", "certs/AmazonRootCA1.pem",
+                "--endpoint", "192.168.1.101",
+                "--rootCA", "certs/AVRGGRoot.pem",
+                "--cert", "certs/Bravia_cert_pem_file",
+                "--key", "certs/Bravia_private_key_pem_file",
+                "--thingName", "Bravia",
+                "--topic", "/dt/avr/family-room/bravia",
+                "--tvIP", "192.168.1.194",
+                "--psk", "0000"
+            ]    
+        }
+    ]
+}
