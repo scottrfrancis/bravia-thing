@@ -81,7 +81,7 @@ def do_something():
     global last_power
     state = connection.poll()
     if state['Power'] != last_power:
-        logger.warn(f'Power state changed, sending {state}')
+        logger.warn('Power state changed, sending ' + json.dumps(state))
         # not really a warning, but INFO & Debug is too noisy
         last_power = state['Power']
     try:
