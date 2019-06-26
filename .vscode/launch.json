@@ -18,7 +18,7 @@
                 "--cert", "certs/Bravia_cert_pem_file",
                 "--key", "certs/Bravia_private_key_pem_file",
                 "--thingName", "Bravia",
-                "--topic", "/dt/avr/family-room/bravia",
+                "--topic", "dt/avr/family-room/bravia",
                 "--tvIP", "192.168.1.194",
                 "--psk", "0000"
             ]    
