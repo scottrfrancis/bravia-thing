@@ -1,5 +1,7 @@
 # setup
 
+
+
 ## setup AWS CLI environment using Docker 
 1. Build docker image from tools 
 ```
@@ -52,11 +54,9 @@ curl https://www.amazontrust.com/repository/AmazonRootCA1.pem >AmazonRootCA1.pem
 
 
 ## modify the source
-the AWS IOT Device Python SDK is incorporated as a git submodule. To get python to find this module, we need to make a symlink to the actual code folder.  Do this with
 ```
-ln -s aws-iot-device-sdk-python/AWSIoTPythonSDK ./AWSIoTPythonSDK
+pip3 install AWSIoTPythonSDK
 ```
-*NB-* can't just use a path import due to the dashs, which confuses python.  
 
 also using the braviarc library as a submodule, which relies on requests, so install that with pip
 ```
@@ -65,7 +65,6 @@ pip3 install requests
 
 Install the git submodules to PIP
 ```
-pip3 install ./aws-iot-device-sdk-python
 pip3 install git+https://github.com/aparraga/braviarc.git
 ```
 
