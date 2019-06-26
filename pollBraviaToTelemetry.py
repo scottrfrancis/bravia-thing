@@ -75,9 +75,15 @@ mqtttc.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
 
 mqtttc.connect()
 
+last_power = ''
 
 def do_something():
+    global last_power
     state = connection.poll()
+    if state['Power'] != last_power:
+        logger.warn(f'Power state changed, sending {state}')
+        # not really a warning, but INFO & Debug is too noisy
+        last_power = state['Power']
     try:
         mqtttc.publish(topicName, json.dumps(state), 0)
 
