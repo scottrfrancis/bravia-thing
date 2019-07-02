@@ -10,7 +10,6 @@ import logging
 from os.path import abspath
 import time
 
-# import BraviaProtocol
 import BraviaQuery
 
 
@@ -76,7 +75,6 @@ streamHandler.setFormatter(formatter)
 logger.addHandler(streamHandler)
 
 connection = BraviaQuery.BraviaQuery(tv_ip, psk)
-# protocol = BraviaProtocol.BraviaProtocol()
 
 
 def customShadowCallback_Update(payload, responseStatus, token):

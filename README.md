@@ -1,75 +1,43 @@
-# setup
+# Bravia-Thing
 
+Polls a Television on the local network using the [Bravia REST API](https://pro-bravia.sony.net/develop/integrate/rest-api/spec/getting-started) and updates an AWS IoT Device Shadow with the status. 
 
+## Objective
 
-## setup AWS CLI environment using Docker 
-1. Build docker image from tools 
-```
-cd tools
-docker build --tag=daws .
-```
+Wish to use the TV Power as a signal to drive further automation of other entertainment systems -- notably an AVR as described in this [blog post](https://scottrfrancis.wordpress.com/2017/12/10/adding-alexa-to-an-old-av-receiver).
 
-2. dowload the appropriate accessKeys.csv file and put it in the current dir.
+## Environment
 
-3. perform aws commands using the local shell script
-```
-aws.sh iam get-user
-```
-## Create a Thing
-*NB- scripts imported from [Amazon FreeRTOS](https://github.com/aws/amazon-freertos) and unchanged. 
+This script has been tested with a Sony XBR55X900E and XBR65X900E, but should generally work for any of the [Sony Bravia Products](https://pro.sony/ue_US/products/professional-displays).
 
-1. Edit configure.json to set `thing_name`
-2. Inspect `policy_document.templ` for appropriateness and modify if desired
-3. Create a new thing, certificate, and policy
-```
-cd tools
-python3 ./SetupAWS.py prereq
-```
-*NB- this can be undone with
-```
-python3 ./SetupAWS.py delete_prereq
-```
-4. Copy the certificates to a certs dir
-```
-mkdir ../certs
-THINGNAME=$(cat configure.json | jq ".thing_name" | sed -e 's/^"//' -e 's/"$//')
-cp ${THINGNAME}*_file ../certs/
-```
+## Design
 
-## Add Thing to Greengrass group
-1. log in to console
-2. navigate to IOT / Greengrass / Groups / <group name> / Devices
-3. Add device / existing thing
+Following my [Denon Thing](https://github.com/scottrfrancis/DenonPy) design, there is an outer *Python 3* program, `pollBraviaToShadow.py` that implements the AWS IoT Thing-ness. The `BraviaQuery.py` object relies on [appagara's](https://github.com/aparraga) excellent [braviarc](https://github.com/aparraga/braviarc) package. On a regular interval, the poll() method calls get_power_status() and sends the state to the Shadow.
 
-## set endpoint address and root cert
-1. Using AWS CLI
-```
-aws iot describe-endpoint --endpoint-type iot:data-ats | jq '.endpointAddress' 
-```
-2. download the appropriate root CA 
-```
-curl https://www.amazontrust.com/repository/AmazonRootCA1.pem >AmazonRootCA1.pem
-```
+The Shadow operations are one way as no Delta handling implementation has been given. This is consistent with wanting to use the TV power signal as a 'master trigger' for automation activities. A Shadow implmementation was chosen over a Telemetry implementation (as would normally be [recommended](https://d1.awsstatic.com/whitepapers/Designing_MQTT_Topics_for_AWS_IoT_Core.pdf)) to facilitate the shadow/document behavior. The `$aws/things/Bravia/shadow/update/document` topic publishes updated state documents that include *BOTH* current and previous state. Thus, state management is pushed to the Shadow Service and eases the implementation of triggered Lambdas and the device software.
 
+An alternate Telemetry implementation is also provided, but hasn't been as thoroughly tested.
 
-
-## modify the source
+## Setup
+*AWSIoTPythonSDK*
 ```
 pip3 install AWSIoTPythonSDK
 ```
 
-also using the braviarc library as a submodule, which relies on requests, so install that with pip
+also using braviarc, which relies on requests, so install that with pip
 ```
 pip3 install requests
 ```
 
-Install the git submodules to PIP
+*braviarc*
 ```
 pip3 install git+https://github.com/aparraga/braviarc.git
 ```
 
+## Usage
 
+See `start.sh` for example invocation. Be sure to supply the appropriate endpoint, certificates, etc. Available options are near the top of `pollBraviaToShadow.py`. *NB*- If using Greengrass, supply IP and the right root-ca.
 
-# references
-The Bravia API is described [here](https://pro-bravia.sony.net/develop/integrate/rest-api/spec/getting-started/)
-
+### TODOs
+[ ] implement Greengrass Discovery to handle fail over and startup
+[ ] wrap the connect with some retry logic for bootup race condition problems
