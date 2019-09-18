@@ -92,15 +92,15 @@ def customShadowCallback_Update(payload, responseStatus, token):
     if responseStatus == "rejected":
         print("Update request " + token + " rejected!")
 
-# def customShadowCallback_Delta(self, payload, responseStatus, token):
-#     print("Received a delta message:")
-#     payloadDict = json.loads(payload)
-#     deltaMessage = json.dumps(payloadDict["state"])
-#     print(deltaMessage + "\n")
+def customShadowCallback_Delta(self, payload, responseStatus, token):
+    print("Received a delta message:")
+    payloadDict = json.loads(payload)
+    deltaMessage = json.dumps(payloadDict["state"])
+    print(deltaMessage + "\n")
 
-#     commands = protocol.makeCommands(payloadDict["state"])
-#     print("\nbuilt commands: " + str(commands) + "\n")
-#     connection.send(commands)
+    # commands = protocol.makeCommands(payloadDict["state"])
+    # print("\nbuilt commands: " + str(commands) + "\n")
+    # connection.send(commands)
 
 
 mqtttc = AWSIoTMQTTShadowClient(thingName)
@@ -119,7 +119,7 @@ mqtttc.connect()
 deviceShadowHandler = mqtttc.createShadowHandlerWithName(thingName, True)
 
 # Listen on deltas
-# deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
+deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
 
 last_power = ''
 
@@ -127,7 +127,7 @@ last_power = ''
 def do_something():
     global last_power
     state = connection.poll()
-    if state['Power'] != last_power:
+    if state['Power'] != last_power or True:
         logger.warn('Power state changed, sending ' + json.dumps(state))
         # not really a warning, but INFO & Debug is too noisy
         last_power = state['Power']
