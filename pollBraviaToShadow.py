@@ -93,10 +93,10 @@ def customShadowCallback_Update(payload, responseStatus, token):
         print("Update request " + token + " rejected!")
 
 def customShadowCallback_Delta(self, payload, responseStatus, token):
-    print("Received a delta message:")
+    logger.warn("Received a delta message:")
     payloadDict = json.loads(payload)
     deltaMessage = json.dumps(payloadDict["state"])
-    print(deltaMessage + "\n")
+    logger.warn(deltaMessage + "\n")
 
     # commands = protocol.makeCommands(payloadDict["state"])
     # print("\nbuilt commands: " + str(commands) + "\n")
@@ -127,7 +127,7 @@ last_power = ''
 def do_something():
     global last_power
     state = connection.poll()
-    if state['Power'] != last_power or True:
+    if state['Power'] != last_power:
         logger.warn('Power state changed, sending ' + json.dumps(state))
         # not really a warning, but INFO & Debug is too noisy
         last_power = state['Power']
