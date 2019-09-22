@@ -14,4 +14,13 @@ class BraviaQuery:
 
         return { 'Power': self.bravia.get_power_status(),
                   'LED': led_status }
+
+    def setMute(self, isOn):
+        mode = "Demo" if str(isOn).lower() == "on" else "SimpleResponse"
+        print("setting LED to " + str(str(isOn).lower() == "on").lower() + " with mode " + mode)
+        self.bravia.set_led_status(mode, str(str(isOn).lower() == "on").lower())
+
+    def setVolume(self, level):
+        print("setting volume to " + str(level))
+        self.bravia.set_volume_level(level/100)
         

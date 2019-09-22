@@ -92,15 +92,17 @@ def customShadowCallback_Update(payload, responseStatus, token):
     if responseStatus == "rejected":
         print("Update request " + token + " rejected!")
 
-def customShadowCallback_Delta(self, payload, responseStatus, token):
+def customShadowCallback_Delta(payload, responseStatus, token):
     logger.warn("Received a delta message:")
     payloadDict = json.loads(payload)
     deltaMessage = json.dumps(payloadDict["state"])
     logger.warn(deltaMessage + "\n")
 
-    # commands = protocol.makeCommands(payloadDict["state"])
-    # print("\nbuilt commands: " + str(commands) + "\n")
-    # connection.send(commands)
+    if 'Mute' in payloadDict['state']:
+        connection.setMute(payloadDict['state']['Mute'])
+
+    if 'Volume' in payloadDict['state']:
+        connection.setVolume(int(payloadDict['state']['Volume']))
 
 
 mqtttc = AWSIoTMQTTShadowClient(thingName)
