@@ -595,3 +595,13 @@ class BraviaRC(object):
 			    self._jdata_build("setLEDIndicatorStatus", payload, apiVersion="1.1"))
         except:
             pass
+
+    def set_audio_mute(self, status):
+        """Set the Audio Mute on/off based on status
+            status: true | false | null """
+        payload = {"status": status}
+        try:
+            self.bravia_req_json("sony/audio",
+                self._jdata_build("setAudioMute", payload))
+        except:
+            pass

@@ -82,13 +82,7 @@ def customShadowCallback_Update(payload, responseStatus, token):
     # in both Py2.x and Py3.x
     if responseStatus == "timeout":
         print("Update request " + token + " time out!")
-    # if responseStatus == "accepted":
-    #     payloadDict = json.loads(payload)
-    #     print("~~~~~~~~~~~~~~~~~~~~~~~")
-    #     print("Update request with token: " + token + " accepted!")
-    #     # ["state"]["desired"]["property"]))
-    #     print("payload: " + json.dumps(payloadDict))
-    #     print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+
     if responseStatus == "rejected":
         print("Update request " + token + " rejected!")
 
@@ -98,10 +92,12 @@ def customShadowCallback_Delta(payload, responseStatus, token):
     deltaMessage = json.dumps(payloadDict["state"])
     logger.warn(deltaMessage + "\n")
 
+    muteOn = False
     if 'Mute' in payloadDict['state']:
+        muteOn = payloadDict['state']['Mute'].lower() == "on"
         connection.setMute(payloadDict['state']['Mute'])
 
-    if 'Volume' in payloadDict['state']:
+    if 'Volume' in payloadDict['state'] and not muteOn:
         connection.setVolume(int(payloadDict['state']['Volume']))
 
 
