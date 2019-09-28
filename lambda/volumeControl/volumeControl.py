@@ -20,11 +20,19 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 client = greengrasssdk.client('iot-data')
 
 def reportedToDesired_handler(event, context):
-    # mute = event['current']['state']['reported']['Mute']
-    # if mute != event['previous']['state']['reported']['Mute']:
+   logger.info("recevied " + json.dumps(event))
+    try:
+        reported = event['current']['state']['reported']
+        mute = reported['Mute']
+        vol = reported['Volume']
 
-    # transform the desired state
-    client.update_thing_shadow(thingName='Bravia',
-        payload=json.dumps({"state":{"desired":{"Mute":mute.lower()}}}))
+        # transform the desired state
+        client.update_thing_shadow(thingName='Bravia',
+            payload=json.dumps({"state":{"desired":{
+                "Mute": mute.lower(),
+                "Volume": vol
+            }}}))
+    except:
+        pass
 
     return True
