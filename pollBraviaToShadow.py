@@ -124,15 +124,16 @@ last_power = ''
 
 def do_something():
     global last_power
-    state = connection.poll()
-    if state['Power'] != last_power:
-        logger.warn('Power state changed, sending ' + json.dumps(state))
-        # not really a warning, but INFO & Debug is too noisy
-        last_power = state['Power']
     try:
-        # mqtttc.publish(topicName, json.dumps(state), 0)
-        deviceShadowHandler.shadowUpdate(Shadow.makeStatePayload(
-            "reported", state), customShadowCallback_Update, 5)
+        state = connection.poll()
+        if state['Power'] != last_power:
+            logger.warn('Power state changed, sending ' + json.dumps(state))
+            # not really a warning, but INFO & Debug is too noisy
+            last_power = state['Power']
+    
+            # mqtttc.publish(topicName, json.dumps(state), 0)
+            deviceShadowHandler.shadowUpdate(Shadow.makeStatePayload(
+                "reported", state), customShadowCallback_Update, 5)
 
     except Exception as e:
         logger.info(e)
